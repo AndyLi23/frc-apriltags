@@ -7,6 +7,8 @@ if __name__ == "__main__":
     stream = Stream(2)
     
     while True:
-        print(len(stream.get()))
+        if stream.get() is not None:
+            print(len(stream.get()))
+        time.sleep(0.1)
         
         
