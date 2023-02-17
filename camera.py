@@ -1,6 +1,7 @@
 from threading import Thread
 import subprocess
 import numpy as np
+import time
 
 res = (1280, 800)
 
@@ -39,6 +40,8 @@ class Stream():
         
     def update(self):
         while True:
+            st = time.time()
+
             re = self.pipe.stdout.read(res[0] * res[1] * 3)
             if len(re) > 0:
                 array = np.frombuffer(re, dtype="uint8")
@@ -55,6 +58,8 @@ class Stream():
                     stderr=subprocess.DEVNULL,
                     bufsize=res[0] * res[1] * 3,
                 )
+                
+            print("Cycle time: " + str(time.time() - st))
                 
     def switch_cam(self, src):
         self.src = src
