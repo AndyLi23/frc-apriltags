@@ -1,6 +1,6 @@
 from threading import Thread
 from camera import Stream
-from apriltag import detect
+from process import detect
 import time
 
 if __name__ == "__main__":
