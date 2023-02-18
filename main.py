@@ -1,5 +1,6 @@
 from threading import Thread
 from camera import Stream
+from apriltag import detect
 import time
 
 if __name__ == "__main__":
@@ -8,7 +9,7 @@ if __name__ == "__main__":
     
     while True:
         if stream.get() is not None:
-            print(len(stream.get()))
-        time.sleep(0.1)
+            detect(stream.get())
+
         
         
