@@ -31,6 +31,6 @@ def detect(frame):
 
     #print(len(results))
  
-    #cv.imshow('frame', frame) 
-    #k = cv.waitKey(0) & 255
+    cv.imshow('frame', frame) 
+    k = cv.waitKey(0) & 255
 

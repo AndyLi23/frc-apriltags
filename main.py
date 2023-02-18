@@ -4,11 +4,11 @@ from process import detect
 import time
 from random import random
 
-ids = [2, 5, 7, 9]
+ids = [2, 4, 6, 8]
 
 if __name__ == "__main__":
     # Open camera streamer widget
-    stream = Stream(9)
+    stream = Stream(2)
     
     while True:
         if stream.get() is not None:
