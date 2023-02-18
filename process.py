@@ -1,11 +1,12 @@
 import cv2 as cv
-import process
+import apriltag
 import numpy as np
 
-detector = process.Detector(process.DetectorOptions(families='tag16h5'))
+detector = apriltag.Detector(apriltag.DetectorOptions(families='tag16h5'))
 
 def detect(frame):
-    results = detector.detect(frame)
+    gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+    results = detector.detect(gray)
     
     print(results)
 
