@@ -46,11 +46,11 @@ class Stream():
 
             #print(time.time() - st)
             if len(re) > 0:
-                print("frame valid")
+                #print("frame valid")
                 array = np.frombuffer(re, dtype="uint8")
                 self.frame = array.reshape((res[1], res[0], 3))           
 
-            if self.switch:
+            while self.switch:
                 self.pipe.stdout.close()
                 args[2] = "/dev/video" + str(self.src)
                 self.switch = False
@@ -63,7 +63,7 @@ class Stream():
                 )
             
             if len(re) > 0:
-                print("Cycle time: " + str(time.time() - st))
+                print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
                 
     def switch_cam(self, src):
         self.src = src
