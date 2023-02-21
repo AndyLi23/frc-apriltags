@@ -3,6 +3,7 @@ import apriltag
 import numpy as np
 import time
 import json
+from mathtools import euler_from_matrix, angle
 
 def load_config():
     d = json.load(open('config.json'))
@@ -36,6 +37,8 @@ def detect(frame):
     gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
     results = detector.detect(gray)
     
+    n = 0
+
     for r in results:
         if str(r.tag_id) in coords.keys():
 
@@ -47,27 +50,41 @@ def detect(frame):
 
             ret, rvecs, tvecs = cv.solvePnP(p3d, p2d, mtx, dist)
 
-            #for i in range(4):
-            #    cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)
-            #    cv.line(frame, (p2d[i][0], p2d[i][1]), (p2d[(i+1)%4][0], p2d[(i+1)%4][1]), (0, 255, 0), 1)
-            #
-            #tests = []
-            #for i in range(4):
-            #    test, jac = cv.projectPoints(np.array(coords[str(r.tag_id)][i], dtype=np.float32), rvecs, tvecs, mtx, dist)
-            #    tests.append(test)
-            #
-            #for i in range(4):
-            #    #print(tests[(i+1)%4][0][0])
-            #    cv.line(frame, tuple(tests[i][0][0]), tuple(tests[(i+1)%4][0][0]), (0, 0, 255), 1)
-            #
-            #cv.putText(frame, str(tvecs), (50, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 1, cv.LINE_AA)
+            rotation_matrix = np.array([[0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 0],
+                    [0, 0, 0, 1]],
+                        dtype=float)
+            rotation_matrix[:3, :3], _ = cv.Rodrigues(rvecs)
 
+            euler = euler_from_matrix(rotation_matrix)
+
+
+            for i in range(4):
+                cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)
+                cv.line(frame, (p2d[i][0], p2d[i][1]), (p2d[(i+1)%4][0], p2d[(i+1)%4][1]), (0, 255, 0), 1)
+            
+            tests = []
+            for i in range(4):
+                test, jac = cv.projectPoints(np.array(coords[str(r.tag_id)][i], dtype=np.float32), rvecs, tvecs, mtx, dist)
+                tests.append(test)
+            
+            for i in range(4):
+                #print(tests[(i+1)%4][0][0])
+                cv.line(frame, tuple(tests[i][0][0]), tuple(tests[(i+1)%4][0][0]), (0, 0, 255), 1)
+            
+            info = "ID:{}  |  X:{:.2f} Y:{:.2f} Z:{:.2f}  |  a:{:.2f} b:{:.2f} g:{:.2f}".format(r.tag_id, tvecs[0][0], tvecs[1][0], tvecs[2][0], angle(euler[0]), angle(euler[1]), angle(euler[2]))
+
+            cv.putText(frame, info, (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
+            #cv.putText(frame, "abg: " + str(euler), (50, 80), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2, cv.LINE_AA)
+
+            n += 1
 
 
     print("Detection: " + str(time.time() - st) + ",                tags: " + str(len(results)))
 
     #print(len(results))
  
-    #cv.imshow('frame', frame) 
-    #k = cv.waitKey(0) & 255
+    cv.imshow('frame', frame) 
+    k = cv.waitKey(0) & 255
 
