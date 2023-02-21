@@ -1,35 +1,13 @@
 from threading import Thread
-import subprocess
+import cv2 as cv
 import numpy as np
 import time
-
-res = (1280, 800)
-
-args = [
-        "ffmpeg",
-        "-i",
-        "",
-        "-f",
-        "image2pipe",
-        "-pix_fmt",
-        "rgb24",
-        "-vcodec",
-        "rawvideo",
-        "-",
-    ]
 
 class Stream():
     def __init__(self, src):
         
-        args[2] = "/dev/video" + str(src)
-        
-        self.pipe = subprocess.Popen(
-            args,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
-            bufsize=res[0] * res[1] * 3,
-        )
-        
+        self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(src))
+
         self.frame = None
         self.switch = False
         self.src = src
@@ -42,32 +20,21 @@ class Stream():
         while True:
             st = time.time()
 
-            re = self.pipe.stdout.read(res[0] * res[1] * 3)
+            ret, frame = self.camera.read()
 
-            #print(time.time() - st)
-            if len(re) > 0:
-                #print("frame valid")
-                array = np.frombuffer(re, dtype="uint8")
-                self.frame = array.reshape((res[1], res[0], 3))           
+            if ret: self.frame = frame
 
             while self.switch:
-                self.pipe.stdout.close()
-                args[2] = "/dev/video" + str(self.src)
                 self.switch = False
-                
-                self.pipe = subprocess.Popen(
-                    args,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.DEVNULL,
-                    bufsize=res[0] * res[1] * 3,
-                )
-            
-            if len(re) > 0:
-                print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
+                self.camera.release()
+                self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
+
+            if ret: print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
                 
     def switch_cam(self, src):
-        self.src = src
-        self.switch = True
+        if src != self.src:
+            self.src = src
+            self.switch = True
             
     def get(self):
         return self.frame

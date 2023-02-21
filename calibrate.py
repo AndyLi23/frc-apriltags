@@ -9,7 +9,7 @@ def save_json(data, file_name):
         f.write(json_data)
  
 # Defining the dimensions of checkerboard
-CHECKERBOARD = (7,9)
+CHECKERBOARD = (6,8)
 criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
  
 # Creating vector to store vectors of 3D points for each checkerboard image
@@ -26,7 +26,7 @@ prev_img_shape = None
 print(objp)
  
 # Extracting path of individual image stored in a given directory
-images = ['./images/' + str(i) + '.jpg' for i in range(30)]
+images = ['./images_c0/' + str(i) + '.jpg' for i in range(46)]
 
 for fname in images:
     img = cv2.imread(fname)
@@ -34,6 +34,8 @@ for fname in images:
     # Find the chess board corners
     # If desired number of corners are found in the image then ret = true
     ret, corners = cv2.findChessboardCorners(gray, CHECKERBOARD, cv2.CALIB_CB_ADAPTIVE_THRESH + cv2.CALIB_CB_FAST_CHECK + cv2.CALIB_CB_NORMALIZE_IMAGE)
+
+    print(ret)
      
     """
     If desired number of corner are detected,
