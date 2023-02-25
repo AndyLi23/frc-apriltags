@@ -28,11 +28,15 @@ mtx, dist, coords, params, cams = load_config()
 criteria = (cv.TERM_CRITERIA_EPS + cv.TERM_CRITERIA_MAX_ITER, params['iter'], params['eps'])
 res = params['res']
 
+print("Loading config")
 print(mtx, dist, coords, params, cams)
 
 detector = apriltag.Detector(apriltag.DetectorOptions(families='tag16h5'))
 
-def detect(frame):
+def detect(frame_time, table):
+    
+    frame = frame_time[0]
+    time = frame_time[1]
 
     st = time.time()
 
@@ -72,7 +76,11 @@ def detect(frame):
             n+=1
 
             robot_world = camrobot_world + camtag_world
-
+            
+            table.putNumber("pose_x", robot_world[0])
+            table.putNumber("pose_y", robot_world[1])
+            table.putNumber("pose_z", robot_world[2])
+            table.putNumber("pose_time", time)
 
 
             rotation_matrix = np.array([[0, 0, 0, 0],

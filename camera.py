@@ -8,9 +8,10 @@ class Stream():
         
         self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(src))
 
-        self.frame = None
+        self.frame = (None, time.time())
         self.switch = False
         self.src = src
+        self.new = False
         
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
@@ -22,7 +23,9 @@ class Stream():
 
             ret, frame = self.camera.read()
 
-            if ret: self.frame = frame
+            if ret:
+                self.frame = (frame, st)
+                self.new = True
 
             while self.switch:
                 self.switch = False
@@ -38,4 +41,10 @@ class Stream():
             
     def get(self):
         return self.frame
+    
+    def new(self):
+        return self.new
+    
+    def read(self):
+        self.new = False
             

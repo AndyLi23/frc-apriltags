@@ -1,24 +1,31 @@
-from threading import Thread
 from camera import Stream
 from process import detect
+from networktables import NetworkTables
 import time
-from random import random
 
-ids = [0, 1, 2, 3]
+TEAM = 1351
+PORT = 1735
+IDS = [0, 1, 2, 3]
+
+print("Connecting to NetworkTables")
+
+NetworkTables.startClientTeam(TEAM)
+NetworkTables.startDSClient(PORT)
+
+table = NetworkTables.getTable("Dashboard")
 
 if __name__ == "__main__":
     # Open camera streamer widget
     stream = Stream(0)
     
+    print(NetworkTables.isConnected())
+    
     while True:
-        if stream.get() is not None:
-            detect(stream.get())
-            #if random() < 0.01:
-            #    cam = ids[int(random() * 4)]
-                #print(cam)
-            #    stream.switch_cam(cam)
-       # if stream.get() is not None:
-            #detect(stream.get())
+        if stream.new():
+            stream.read()
+            g = stream.get()
+            if g[0] is not None:
+                detect(g, table)
 
         
         
