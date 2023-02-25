@@ -6,13 +6,14 @@ import time
 TEAM = 1351
 PORT = 1735
 IDS = [0, 1, 2, 3]
+TABLE_NAME = "apriltags"
 
 print("Connecting to NetworkTables")
 
 NetworkTables.startClientTeam(TEAM)
 NetworkTables.startDSClient(PORT)
 
-table = NetworkTables.getTable("dashboard")
+table = NetworkTables.getTable(TABLE_NAME)
 
 if __name__ == "__main__":
     # Open camera streamer widget
