@@ -19,7 +19,7 @@ if __name__ == "__main__":
     stream = Stream(2)
     
     while True:
-        print(NetworkTables.isConnected())
+        # print(NetworkTables.isConnected())
         if stream.available():
             stream.read()
             g = stream.get()

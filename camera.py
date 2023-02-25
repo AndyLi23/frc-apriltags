@@ -32,7 +32,7 @@ class Stream():
                 self.camera.release()
                 self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
 
-            if ret: print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
+            # if ret: print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
                 
     def switch_cam(self, src):
         if src != self.src:
