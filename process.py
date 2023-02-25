@@ -44,6 +44,8 @@ def detect(frame_time, table, cam_id):
     results = detector.detect(gray)
     
     n = 0
+    
+    pose_x, pose_y, pose_z, pose_time = (), (), (), ()
 
     for r in results:
         if str(r.tag_id) in coords.keys():
@@ -86,29 +88,10 @@ def detect(frame_time, table, cam_id):
 
             n+=1
 
-            seen = table.getBoolean("seen", False)
-
-            print("SHO&LD BE SEEN: " + str(seen))
-            pose_x, pose_y, pose_z, pose_time = (), (), (), ()
-
-            if not seen:
-                pose_x = table.getNumberArray("pose_x", ())
-                pose_y = table.getNumberArray("pose_y", ())
-                pose_z = table.getNumberArray("pose_z", ())
-                pose_time = table.getNumberArray("pose_time", ())
-
             pose_x += (robot_world[0],)
             pose_y += (robot_world[1],)
             pose_z += (robot_world[2],)
             pose_time += (ti,)
-
-
-            table.putNumberArray("pose_x", pose_x)
-            table.putNumberArray("pose_y", pose_y)
-            table.putNumberArray("pose_z", pose_z)
-            table.putNumberArray("pose_time", pose_time)
-            table.putBoolean("seen", False)
-
 
             rotation_matrix = np.array([[0, 0, 0, 0],
                     [0, 0, 0, 0],
@@ -145,6 +128,22 @@ def detect(frame_time, table, cam_id):
             #cv.putText(frame, "abg: " + str(euler), (50, 80), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2, cv.LINE_AA)
 
             n += 1
+            
+    seen = table.getBoolean("seen", False)
+
+    print("SHO&LD BE SEEN: " + str(seen))
+    
+    if not seen:
+        pxt = table.getNumberArray("pose_x", ())
+        pyt = table.getNumberArray("pose_y", ())
+        pzt = table.getNumberArray("pose_z", ())
+        ptt = table.getNumberArray("pose_time", ())
+        
+    table.putNumberArray("pose_x", pxt + pose_x)
+    table.putNumberArray("pose_y", pyt + pose_y)
+    table.putNumberArray("pose_z", pzt + pose_z)
+    table.putNumberArray("pose_time", ptt + pose_time)
+    table.putBoolean("seen", False)
 
 
     print("Detection: " + str(time.time() - st) + ",                tags: " + str(len(results)))
