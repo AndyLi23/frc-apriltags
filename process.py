@@ -93,6 +93,8 @@ def detect(frame_time, table, cam_id):
             pose_z += (robot_world[2],)
             pose_time += (ti,)
 
+            table.putNumberArray("pose", (robot_world[0], robot_world[1], robot_world[2], ti))
+
             rotation_matrix = np.array([[0, 0, 0, 0],
                     [0, 0, 0, 0],
                     [0, 0, 0, 0],
@@ -129,23 +131,23 @@ def detect(frame_time, table, cam_id):
 
             n += 1
             
-    seen = table.getBoolean("seen", False)
+    #seen = table.getBoolean("seen", False)
 
-    print("SHO&LD BE SEEN: " + str(seen))
+    #print("SHO&LD BE SEEN: " + str(seen))
     
-    pxt, pyt, pzt, ptt = (), (), (), ()
+    #pxt, pyt, pzt, ptt = (), (), (), ()
 
-    if not seen:
-        pxt = table.getNumberArray("pose_x", ())
-        pyt = table.getNumberArray("pose_y", ())
-        pzt = table.getNumberArray("pose_z", ())
-        ptt = table.getNumberArray("pose_time", ())
-        
-    table.putNumberArray("pose_x", pxt + pose_x)
-    table.putNumberArray("pose_y", pyt + pose_y)
-    table.putNumberArray("pose_z", pzt + pose_z)
-    table.putNumberArray("pose_time", ptt + pose_time)
-    table.putBoolean("seen", False)
+    #if not seen:
+    #    pxt = table.getNumberArray("pose_x", ())
+    #    pyt = table.getNumberArray("pose_y", ())
+    #    pzt = table.getNumberArray("pose_z", ())
+    #    ptt = table.getNumberArray("pose_time", ())
+    #    
+    #table.putNumberArray("pose_x", pxt + pose_x)
+    #table.putNumberArray("pose_y", pyt + pose_y)
+    #table.putNumberArray("pose_z", pzt + pose_z)
+    #table.putNumberArray("pose_time", ptt + pose_time)
+    #table.putBoolean("seen", False)
 
 
     print("Detection: " + str(time.time() - st) + ",                tags: " + str(len(results)))
