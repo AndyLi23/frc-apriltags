@@ -42,7 +42,7 @@ class Stream():
     def get(self):
         return self.frame
     
-    def new(self):
+    def available(self):
         return self.new
     
     def read(self):

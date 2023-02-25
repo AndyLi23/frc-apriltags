@@ -33,10 +33,10 @@ print(mtx, dist, coords, params, cams)
 
 detector = apriltag.Detector(apriltag.DetectorOptions(families='tag16h5'))
 
-def detect(frame_time, table):
+def detect(frame_time, table, cam_id):
     
     frame = frame_time[0]
-    time = frame_time[1]
+    ti = frame_time[1]
 
     st = time.time()
 
@@ -60,27 +60,36 @@ def detect(frame_time, table):
 
             #cams['0']['tvec'][1] = -cams['0']['tvec'][1]
 
-            cam = np.array(cams['0']['tvec'], dtype=np.float32)
+            cam = np.array(cams[str(cam_id)]['tvec'], dtype=np.float32)
 
             camrobot_world = np.matmul(inv(rmtx), cam.T)
 
             cv.putText(frame, str(camrobot_world), (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
             n+=1
 
-            camtag_world = np.matmul(inv(rmtx), tvecs)
+            camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
+
+            camtag_world = np.matmul(inv(rmtx), camtag_cam)
+
+            print(camtag_world)
 
             for i in range(len(camtag_world)):
                 camtag_world[i] = -camtag_world[i]
 
-            cv.putText(frame, str(camtag_world), (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0,), 2, cv.LINE_AA)
+            cv.putText(frame, str(camtag_world), (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
             n+=1
 
             robot_world = camrobot_world + camtag_world
             
+            #print(camrobot_world, camtag_world, robot_world)
+            cv.putText(frame, str(robot_world), (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 0), 2, cv.LINE_AA)
+
+            n+=1
+
             table.putNumber("pose_x", robot_world[0])
             table.putNumber("pose_y", robot_world[1])
             table.putNumber("pose_z", robot_world[2])
-            table.putNumber("pose_time", time)
+            table.putNumber("pose_time", ti)
 
 
             rotation_matrix = np.array([[0, 0, 0, 0],

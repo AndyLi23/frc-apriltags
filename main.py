@@ -18,14 +18,13 @@ if __name__ == "__main__":
     # Open camera streamer widget
     stream = Stream(0)
     
-    print(NetworkTables.isConnected())
-    
     while True:
-        if stream.new():
+        print(NetworkTables.isConnected())
+        if stream.available():
             stream.read()
             g = stream.get()
             if g[0] is not None:
-                detect(g, table)
+                detect(g, table, stream.src)
 
         
         
