@@ -133,6 +133,8 @@ def detect(frame_time, table, cam_id):
 
     print("SHO&LD BE SEEN: " + str(seen))
     
+    pxt, pyt, pzt, ptt = (), (), (), ()
+
     if not seen:
         pxt = table.getNumberArray("pose_x", ())
         pyt = table.getNumberArray("pose_y", ())
