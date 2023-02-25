@@ -12,11 +12,11 @@ print("Connecting to NetworkTables")
 NetworkTables.startClientTeam(TEAM)
 NetworkTables.startDSClient(PORT)
 
-table = NetworkTables.getTable("Dashboard")
+table = NetworkTables.getTable("dashboard")
 
 if __name__ == "__main__":
     # Open camera streamer widget
-    stream = Stream(0)
+    stream = Stream(2)
     
     while True:
         print(NetworkTables.isConnected())

@@ -86,10 +86,28 @@ def detect(frame_time, table, cam_id):
 
             n+=1
 
-            table.putNumber("pose_x", robot_world[0])
-            table.putNumber("pose_y", robot_world[1])
-            table.putNumber("pose_z", robot_world[2])
-            table.putNumber("pose_time", ti)
+            seen = table.getBoolean("seen", False)
+
+            print("SHO&LD BE SEEN: " + str(seen))
+            pose_x, pose_y, pose_z, pose_time = (), (), (), ()
+
+            if not seen:
+                pose_x = table.getNumberArray("pose_x", ())
+                pose_y = table.getNumberArray("pose_y", ())
+                pose_z = table.getNumberArray("pose_z", ())
+                pose_time = table.getNumberArray("pose_time", ())
+
+            pose_x += (robot_world[0],)
+            pose_y += (robot_world[1],)
+            pose_z += (robot_world[2],)
+            pose_time += (ti,)
+
+
+            table.putNumberArray("pose_x", pose_x)
+            table.putNumberArray("pose_y", pose_y)
+            table.putNumberArray("pose_z", pose_z)
+            table.putNumberArray("pose_time", pose_time)
+            table.putBoolean("seen", False)
 
 
             rotation_matrix = np.array([[0, 0, 0, 0],
