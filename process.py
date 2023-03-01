@@ -47,8 +47,6 @@ def detect(frame_time, table, cam_id):
         
         n = 0
         
-        pose_x, pose_y, pose_z, pose_time = (), (), (), ()
-
         for r in results:
             if str(r.tag_id) in coords.keys():
 
@@ -90,28 +88,14 @@ def detect(frame_time, table, cam_id):
 
                 n+=1
 
-                pose_x += (robot_world[0],)
-                pose_y += (robot_world[1],)
-                pose_z += (robot_world[2],)
-                pose_time += (ti,)
+                table.putNumberArray("pose", (robot_world[0], robot_world[1], robot_world[2], ti))
 
-<<<<<<< HEAD
-            table.putNumberArray("pose", (robot_world[0], robot_world[1], robot_world[2], ti))
-
-            rotation_matrix = np.array([[0, 0, 0, 0],
-                    [0, 0, 0, 0],
-                    [0, 0, 0, 0],
-                    [0, 0, 0, 1]],
-                        dtype=float)
-            rotation_matrix[:3, :3] = rmtx
-=======
                 rotation_matrix = np.array([[0, 0, 0, 0],
                         [0, 0, 0, 0],
                         [0, 0, 0, 0],
                         [0, 0, 0, 1]],
                             dtype=float)
                 rotation_matrix[:3, :3] = rmtx
->>>>>>> 849087eb6246ab25d11e5e574964b8c183af9919
 
                 euler = euler_from_matrix(rotation_matrix)
 
@@ -137,51 +121,10 @@ def detect(frame_time, table, cam_id):
                 
                 info = "ID:{}  |  X:{:.2f} Y:{:.2f} Z:{:.2f}  |  a:{:.2f} b:{:.2f} g:{:.2f}".format(r.tag_id, tvecs[0][0], tvecs[1][0], tvecs[2][0], angle(euler[0]), angle(euler[1]), angle(euler[2]))
 
-<<<<<<< HEAD
-            n += 1
-            
-    #seen = table.getBoolean("seen", False)
-
-    #print("SHO&LD BE SEEN: " + str(seen))
-    
-    #pxt, pyt, pzt, ptt = (), (), (), ()
-
-    #if not seen:
-    #    pxt = table.getNumberArray("pose_x", ())
-    #    pyt = table.getNumberArray("pose_y", ())
-    #    pzt = table.getNumberArray("pose_z", ())
-    #    ptt = table.getNumberArray("pose_time", ())
-    #    
-    #table.putNumberArray("pose_x", pxt + pose_x)
-    #table.putNumberArray("pose_y", pyt + pose_y)
-    #table.putNumberArray("pose_z", pzt + pose_z)
-    #table.putNumberArray("pose_time", ptt + pose_time)
-    #table.putBoolean("seen", False)
-=======
                 cv.putText(frame, info, (50, 60 + 40 * n), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "abg: " + str(euler), (50, 80), cv.FONT_HERSHEY_SIMPLEX, 0.7, (255, 0, 0), 2, cv.LINE_AA)
 
                 n += 1
-                
-        seen = table.getBoolean("seen", False)
-
-        print("SHO&LD BE SEEN: " + str(seen))
-        
-        pxt, pyt, pzt, ptt = (), (), (), ()
-
-        if not seen:
-            pxt = table.getNumberArray("pose_x", ())
-            pyt = table.getNumberArray("pose_y", ())
-            pzt = table.getNumberArray("pose_z", ())
-            ptt = table.getNumberArray("pose_time", ())
-            
-        table.putNumberArray("pose_x", pxt + pose_x)
-        table.putNumberArray("pose_y", pyt + pose_y)
-        table.putNumberArray("pose_z", pzt + pose_z)
-        table.putNumberArray("pose_time", ptt + pose_time)
-        table.putBoolean("seen", False)
->>>>>>> 849087eb6246ab25d11e5e574964b8c183af9919
-
 
         print("Detection: " + str(time.time() - st) + ",                tags: " + str(len(results)))
 
