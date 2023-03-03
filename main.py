@@ -17,7 +17,7 @@ table = NetworkTables.getTable(TABLE_NAME)
 
 if __name__ == "__main__":
     # Open camera streamer widget
-    stream = Stream(2)
+    stream = Stream(3)
     
     while True:
         # print(NetworkTables.isConnected())
