@@ -15,10 +15,14 @@ NetworkTables.startDSClient(PORT)
 
 table = NetworkTables.getTable(TABLE_NAME)
 
+
+print("Loading stream")
+
 if __name__ == "__main__":
     # Open camera streamer widget
     stream = Stream(3)
     
+    print("Starting main loop")
     while True:
         # print(NetworkTables.isConnected())
         if stream.available():

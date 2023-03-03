@@ -30,13 +30,12 @@ res = params['res']
 
 print("Loading config")
 print(mtx, dist, coords, params, cams)
+print("\n————————\n")
 
 detector = apriltag.Detector(apriltag.DetectorOptions(families='tag16h5'))
 
 def detect(frame_time, table, cam_id):
-    
     try:
-        
         frame = frame_time[0]
         ti = frame_time[1]
 
@@ -59,10 +58,18 @@ def detect(frame_time, table, cam_id):
                 ret, rvecs, tvecs = cv.solvePnP(p3d, p2d, mtx, dist)
 
                 rmtx, _ = cv.Rodrigues(rvecs)
+                
+                rotation_matrix = np.array([[0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 0],
+                        [0, 0, 0, 1]],
+                            dtype=float)
+                rotation_matrix[:3, :3] = rmtx
 
-                #cams['0']['tvec'][1] = -cams['0']['tvec'][1]
+                euler = euler_from_matrix(rotation_matrix)
 
                 cam = np.array(cams[str(cam_id)]['tvec'], dtype=np.float32)
+                cam_a = cams[str(cam_id)]['euler']
 
                 camrobot_world = np.matmul(inv(rmtx), cam.T)
 
@@ -88,17 +95,10 @@ def detect(frame_time, table, cam_id):
 
                 n+=1
 
-                table.putNumberArray("pose", (robot_world[0], robot_world[1], robot_world[2], ti))
-
-                rotation_matrix = np.array([[0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 0],
-                        [0, 0, 0, 1]],
-                            dtype=float)
-                rotation_matrix[:3, :3] = rmtx
-
-                euler = euler_from_matrix(rotation_matrix)
-
+                pose = (robot_world[0], robot_world[1], robot_world[2], cam_a[2] + euler[1], ti)
+                print(pose)
+                
+                table.putNumberArray("pose", pose)
 
                 for i in range(4):
                     cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)

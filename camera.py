@@ -6,12 +6,16 @@ import time
 class Stream():
     def __init__(self, src):
         
+        print("Opening v4l2:///dev/cams/c" + str(src))
+        
         self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(src))
 
-        self.frame = (None, time.time())
+        self.frame = (None, time.time_ns())
         self.switch = False
         self.src = src
         self.new = False
+        
+        print("\n————————\n")
         
         self.thread = Thread(target=self.update, args=())
         self.thread.daemon = True
@@ -19,12 +23,13 @@ class Stream():
         
     def update(self):
         while True:
-            st = time.time()
+            ti = time.time_ns()
+            # st = time.time()
 
             ret, frame = self.camera.read()
 
             if ret:
-                self.frame = (frame, st)
+                self.frame = (frame, ti)
                 self.new = True
 
             while self.switch:
