@@ -1,5 +1,5 @@
 from camera import Stream
-from process import detect
+from processd import detect
 from networktables import NetworkTables
 import time
 

@@ -1,7 +1,6 @@
 import cv2 as cv
 import apriltag
 import numpy as np
-from numpy.linalg import inv
 import time
 import json
 from mathtools import euler_from_matrix, radian
@@ -75,7 +74,7 @@ def detect(frame_time, table, cam_id):
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
                 
-                if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
+                # if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
 
                 camtag_world = np.matmul(rmtx.T, camtag_cam)
 
@@ -84,7 +83,9 @@ def detect(frame_time, table, cam_id):
 
                 robot_world = camrobot_world + camtag_world
 
-                pose = (robot_world[0], robot_world[1], robot_world[2], radian(cam_a[1]) + euler[2], ti) # CHECK THIS
+                cd = coords[str(r.tag_id)]
+                pose = (robot_world[0], robot_world[1], robot_world[2], radian(90) + radian(cam_a[1]) + euler[2], ti, 
+                        robot_world[0] - cd[0][0], robot_world[1] - (cd[0][1] + cd[1][1]) / 2) # CHECK THIS
                 print(pose)
                 
                 table.putNumberArray("pose", pose)
