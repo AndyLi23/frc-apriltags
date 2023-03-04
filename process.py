@@ -57,6 +57,8 @@ def detect(frame_time, table, cam_id):
 
                 ret, rvecs, tvecs = cv.solvePnP(p3d, p2d, mtx, dist)
 
+                print("ERROR:   " + str(ret))
+
                 rmtx, _ = cv.Rodrigues(rvecs)
                 
                 rotation_matrix = np.array([[0, 0, 0, 0],

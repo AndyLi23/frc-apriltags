@@ -20,7 +20,7 @@ print("Loading stream")
 
 if __name__ == "__main__":
     # Open camera streamer widget
-    stream = Stream(3)
+    stream = Stream(2)
     
     print("Starting main loop")
     while True:

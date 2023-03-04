@@ -6,9 +6,9 @@ import time
 import json
 from mathtools import euler_from_matrix, angle
 
-SRC = 0
-TAG = 0
-INFO = "D10A0"
+SRC = 2
+TAG = 8
+INFO = "D150A-2"
 
 
 
@@ -46,10 +46,12 @@ detector = apriltag.Detector(apriltag.DetectorOptions(families='tag16h5'))
 
 poses = []
 
+print("v4l2:///dev/cams/c" + str(SRC))
 camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(SRC))
 
 while True:
     ret, frame = camera.read()
+    print(ret)
     
     try:
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -104,14 +106,16 @@ while True:
                     cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)
                     cv.line(frame, (p2d[i][0], p2d[i][1]), (p2d[(i+1)%4][0], p2d[(i+1)%4][1]), (0, 255, 0), 1)
                 
-        cv.imshow('frame', frame) 
-        k = cv.waitKey(0) & 255
+        #cv.imshow('frame', frame) 
+        #k = cv.waitKey(0) & 255
         
-        if(k == ord('s')):
+        #if(k == ord('s')):
+        if(len(temppose) > 0):
             poses += temppose
             
-        if(k == ord('q')):
+        if(len(poses) >= 150):
             save_json(poses, "./covf/C" + str(SRC) + "T" + str(TAG) + " " + INFO + ".json")
+            quit()
         
     except Exception as e:
         print(e)
