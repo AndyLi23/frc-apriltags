@@ -64,25 +64,25 @@ def detect(frame_time, table, cam_id):
                         [0, 0, 0, 0],
                         [0, 0, 0, 1]],
                             dtype=float)
-                rotation_matrix[:3, :3] = rmtx
+                rotation_matrix[:3, :3] = rmtx.T # CHECK THIS
 
                 euler = euler_from_matrix(rotation_matrix)
 
                 cam = np.array(cams[str(cam_id)]['tvec'], dtype=np.float32)
                 cam_a = cams[str(cam_id)]['euler']
 
-                camrobot_world = np.matmul(inv(rmtx), cam.T)
+                camrobot_world = np.matmul(rmtx.T, cam.T)
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
 
-                camtag_world = np.matmul(inv(rmtx), camtag_cam)
+                camtag_world = np.matmul(rmtx.T, camtag_cam)
 
                 for i in range(len(camtag_world)):
                     camtag_world[i] = -camtag_world[i]
 
                 robot_world = camrobot_world + camtag_world
 
-                pose = (robot_world[0], robot_world[1], robot_world[2], cam_a[2] + radian(euler[1]), ti)
+                pose = (robot_world[0], robot_world[1], robot_world[2], radian(cam_a[1]) + euler[2], ti) # CHECK THIS
                 print(pose)
                 
                 table.putNumberArray("pose", pose)

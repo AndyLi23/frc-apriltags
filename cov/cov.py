@@ -4,7 +4,7 @@ import numpy as np
 from numpy.linalg import inv
 import time
 import json
-from mathtools import euler_from_matrix, angle
+from mathtools import euler_from_matrix, angle, radian
 
 SRC = 2
 TAG = 8
@@ -76,18 +76,18 @@ while True:
                         [0, 0, 0, 0],
                         [0, 0, 0, 1]],
                             dtype=float)
-                rotation_matrix[:3, :3] = rmtx
+                rotation_matrix[:3, :3] = rmtx.T # CHECK THIS
 
                 euler = euler_from_matrix(rotation_matrix)
 
                 cam = np.array(cams[str(SRC)]['tvec'], dtype=np.float32)
                 cam_a = cams[str(SRC)]['euler']
 
-                camrobot_world = np.matmul(inv(rmtx), cam.T)
+                camrobot_world = np.matmul(rmtx.T, cam.T)
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
 
-                camtag_world = np.matmul(inv(rmtx), camtag_cam)
+                camtag_world = np.matmul(rmtx.T, camtag_cam)
 
                 for i in range(len(camtag_world)):
                     camtag_world[i] = -camtag_world[i]
@@ -96,7 +96,9 @@ while True:
                 
                 #print(camrobot_world, camtag_world, robot_world)
 
-                pose = (robot_world[0], robot_world[1], cam_a[2] + euler[1])
+                #pose = (robot_world[0], robot_world[1], cam_a[2] + euler[1])
+                pose = (robot_world[0], robot_world[1], radian(cam_a[1]) + euler[2]) # CHECK THIS
+
                 print(pose)
                 temppose.append(pose)
                 
