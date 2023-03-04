@@ -4,7 +4,7 @@ import numpy as np
 from numpy.linalg import inv
 import time
 import json
-from mathtools import euler_from_matrix
+from mathtools import euler_from_matrix, radian
 
 def load_config():
     d = json.load(open('config.json'))
@@ -82,7 +82,7 @@ def detect(frame_time, table, cam_id):
 
                 robot_world = camrobot_world + camtag_world
 
-                pose = (robot_world[0], robot_world[1], robot_world[2], cam_a[2] + euler[1], ti)
+                pose = (robot_world[0], robot_world[1], robot_world[2], cam_a[2] + radian(euler[1]), ti)
                 print(pose)
                 
                 table.putNumberArray("pose", pose)
