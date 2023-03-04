@@ -16,7 +16,9 @@ def cov(data, i, j, im, jm, N):
     return s / (N-1)
         
 for f in os.listdir('./covf/'):
-    data = json.load(open('./covf/' + f))
+    d = json.load(open('./covf/' + f))
+    
+    data = d['poses']
     
     N = len(data)
     
@@ -29,5 +31,7 @@ for f in os.listdir('./covf/'):
     for i in range(3):
         for j in range(3):
             mtx[i][j] = cov(data, i, j, m[i], m[j], N)
+            
+    jd = {'cov': mtx, 'info': d['info']}
     
-    save_json(mtx, './covm/' + f)
+    save_json(jd, './covm/' + f)

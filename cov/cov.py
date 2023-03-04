@@ -116,7 +116,15 @@ while True:
             poses += temppose
             
         if(len(poses) >= 150):
-            save_json(poses, "./covf/C" + str(SRC) + "T" + str(TAG) + " " + INFO + ".json")
+            N = len(poses)
+            m = [sum(poses[i][j] for i in range(N)) / N for j in range(3)]
+            coords[str(TAG)]
+            
+            info = (int(m[0] - coords[0][0]), int(m[1] - (coords[0][1] + coords[1][1]) / 2), int(m[2]))
+            
+            data = {'poses': poses, 'info': info}
+
+            save_json(data, "./covf/C{}T{} X{}Y{}T{}.json".format(SRC, TAG, *info))
             quit()
         
     except Exception as e:
