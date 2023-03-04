@@ -51,7 +51,6 @@ camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(SRC))
 
 while True:
     ret, frame = camera.read()
-    print(ret)
     
     try:
         gray = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
@@ -86,6 +85,8 @@ while True:
                 camrobot_world = np.matmul(rmtx.T, cam.T)
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
+                
+                if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
 
                 camtag_world = np.matmul(rmtx.T, camtag_cam)
 
@@ -108,7 +109,7 @@ while True:
                     cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)
                     cv.line(frame, (p2d[i][0], p2d[i][1]), (p2d[(i+1)%4][0], p2d[(i+1)%4][1]), (0, 255, 0), 1)
                 
-        #cv.imshow('frame', frame) 
+        # cv.imshow('frame', frame) 
         #k = cv.waitKey(0) & 255
         
         #if(k == ord('s')):

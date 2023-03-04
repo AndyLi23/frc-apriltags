@@ -74,6 +74,8 @@ def detect(frame_time, table, cam_id):
                 camrobot_world = np.matmul(rmtx.T, cam.T)
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
+                
+                if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
 
                 camtag_world = np.matmul(rmtx.T, camtag_cam)
 
