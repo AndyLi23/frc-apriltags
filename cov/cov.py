@@ -86,7 +86,7 @@ while True:
 
                 camtag_cam = [tvecs[0][0], tvecs[1][0], tvecs[2][0]]
                 
-                if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
+                #if camtag_cam[0] < 0: camtag_cam[0] = -camtag_cam[0]
 
                 camtag_world = np.matmul(rmtx.T, camtag_cam)
 
@@ -98,7 +98,7 @@ while True:
                 #print(camrobot_world, camtag_world, robot_world)
 
                 #pose = (robot_world[0], robot_world[1], cam_a[2] + euler[1])
-                pose = (robot_world[0], robot_world[1], radian(cam_a[1]) + euler[2]) # CHECK THIS
+                pose = (robot_world[0], robot_world[1], radian(90) + radian(cam_a[1]) + euler[2]) # CHECK THIS
 
                 print(pose)
                 temppose.append(pose)
@@ -109,23 +109,27 @@ while True:
                     cv.circle(frame, (p2d[i][0], p2d[i][1]), 1, (0, 0, 255), -1)
                     cv.line(frame, (p2d[i][0], p2d[i][1]), (p2d[(i+1)%4][0], p2d[(i+1)%4][1]), (0, 255, 0), 1)
                 
-        # cv.imshow('frame', frame) 
+        #cv.imshow('frame', frame) 
         #k = cv.waitKey(0) & 255
         
         #if(k == ord('s')):
         if(len(temppose) > 0):
             poses += temppose
+        else:
+            print("frame failed")
+
+        print(len(poses))
             
         if(len(poses) >= 150):
             N = len(poses)
             m = [sum(poses[i][j] for i in range(N)) / N for j in range(3)]
-            coords[str(TAG)]
+            cd = coords[str(TAG)]
             
-            info = (int(m[0] - coords[0][0]), int(m[1] - (coords[0][1] + coords[1][1]) / 2), int(m[2]))
+            info = (int(m[0] - cd[0][0]), int(m[1] - (cd[0][1] + cd[1][1]) / 2), m[2])
             
             data = {'poses': poses, 'info': info}
 
-            save_json(data, "./covf/C{}T{} X{}Y{}T{}.json".format(SRC, TAG, *info))
+            save_json(data, "./covf/C{}T{} X{}Y{}T{:.2f}.json".format(SRC, TAG, *info))
             quit()
         
     except Exception as e:
