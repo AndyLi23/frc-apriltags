@@ -6,7 +6,7 @@ import time
 TEAM = 1351
 PORT = 1735
 IDS = [0, 1, 2, 3]
-TABLE_NAME = "apriltag"
+TABLE_NAME = "dashboard"
 
 print("Connecting to NetworkTables")
 
