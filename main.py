@@ -30,6 +30,7 @@ if __name__ == "__main__":
             g = stream.get()
             if g[0] is not None:
                 detect(g, table, stream.src)
+        stream.switch_cam(table.getNumber("idealcam", 2))
 
         
         
