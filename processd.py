@@ -90,7 +90,7 @@ def detect(frame_time, table, cam_id):
                 
                 table.putNumberArray("pose", pose)
 
-        print("Detection: " + str(time.time() - st) + ",                tags: " + str(len(results)))
+        print("Detection: " + str(time.time() - st) + "s,                tags: " + str(len(results)))
 
     except Exception as e:
         print(e)

@@ -24,13 +24,12 @@ if __name__ == "__main__":
     
     print("Starting main loop")
     while True:
-        # print(NetworkTables.isConnected())
+        stream.switch_cam(int(table.getNumber("idealcam", 2)))
         if stream.available():
             stream.read()
             g = stream.get()
             if g[0] is not None:
                 detect(g, table, stream.src)
-        stream.switch_cam(table.getNumber("idealcam", 2))
 
         
         

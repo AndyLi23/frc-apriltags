@@ -22,21 +22,27 @@ class Stream():
         
     def update(self):
         while True:
-            ti = time.time_ns()
-            # st = time.time()
+            try:
+                ti = time.time_ns()
+                st = time.time()
+                
+                if self.switch:
+                    print("\n————————\n")
+                    print("Switching to camera v4l2:///dev/cams/c" + str(self.src))
+                    self.switch = False
+                    self.camera.release()
+                    self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
+                    print("Switched cameras in " + str(time.time() - st) + "s")
+                    print("\n————————\n")
+                else:
+                    ret, frame = self.camera.read()
 
-            ret, frame = self.camera.read()
-
-            if ret:
-                self.frame = (frame, ti)
-                self.new = True
-
-            while self.switch:
-                self.switch = False
-                self.camera.release()
-                self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
-
-            # if ret: print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
+                    if ret:
+                        self.frame = (frame, ti)
+                        self.new = True
+                        print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
+            except:
+                print("Frame failed with camera " + self.camera)
                 
     def switch_cam(self, src):
         if src != self.src:
