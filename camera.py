@@ -11,6 +11,7 @@ class Stream():
 
         self.frame = (None, time.time_ns())
         self.switch = False
+        self.switching = False;
         self.src = src
         self.new = False
         
@@ -27,13 +28,16 @@ class Stream():
                 st = time.time()
                 
                 if self.switch:
-                    print("\n————————\n")
-                    print("Switching to camera v4l2:///dev/cams/c" + str(self.src))
-                    self.switch = False
-                    self.camera.release()
-                    self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
-                    print("Switched cameras in " + str(time.time() - st) + "s")
-                    print("\n————————\n")
+                    if not self.switching:
+                        self.switching = True
+                        print("\n————————\n")
+                        print("Switching to camera v4l2:///dev/cams/c" + str(self.src))
+                        self.camera.release()
+                        self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
+                        self.switch = False
+                        print("Switched cameras in " + str(time.time() - st) + "s")
+                        print("\n————————\n")
+                        self.switching = False
                 else:
                     ret, frame = self.camera.read()
 
@@ -41,6 +45,13 @@ class Stream():
                         self.frame = (frame, ti)
                         self.new = True
                         print("Cycle time: " + str(time.time() - st) + " , id: " + str(self.src))
+                    else:
+                        print("\n————————\n")
+                        print("Frame failed, resetting camera")
+                        self.camera.release()
+                        self.camera = cv.VideoCapture("v4l2:///dev/cams/c" + str(self.src))
+                        print("Camera switched successfully")
+                        print("\n————————\n")
             except:
                 print("Frame failed with camera " + self.camera)
                 

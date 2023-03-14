@@ -24,12 +24,15 @@ if __name__ == "__main__":
     
     print("Starting main loop")
     while True:
-        stream.switch_cam(int(table.getNumber("idealcam", 2)))
-        if stream.available():
-            stream.read()
-            g = stream.get()
-            if g[0] is not None:
-                detect(g, table, stream.src)
+        try:
+            stream.switch_cam(int(table.getNumber("idealcam", 2)))
+            if stream.available():
+                stream.read()
+                g = stream.get()
+                if g[0] is not None:
+                    detect(g, table, stream.src)
+        except Exception as e:
+            print("Loop failed: " + str(e))
 
         
         
