@@ -85,7 +85,7 @@ def detect(frame_time, table, cam_id):
 
                 cd = coords[str(r.tag_id)]
                 pose = (robot_world[0], robot_world[1], robot_world[2], radian(90) + radian(cam_a[1]) + euler[2], ti, 
-                        robot_world[0] - cd[0][0], robot_world[1] - (cd[0][1] + cd[1][1]) / 2) # CHECK THIS
+                        robot_world[0] - cd[0][0], robot_world[1] - (cd[0][1] + cd[1][1]) / 2, robot_world[0] - cd[0][0]) # CHECK THIS
                 print(pose)
                 
                 table.putNumberArray("pose", pose)
